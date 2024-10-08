@@ -106,7 +106,8 @@ Shard shard1 at shard1/shard1:27018,shard1_replica:27018,shard1_replica_replica:
   'estimated data per chunk': '11KiB',
   'estimated docs per chunk': 246
 }
----
+
+
 Totals
 {
   data: '45KiB',
