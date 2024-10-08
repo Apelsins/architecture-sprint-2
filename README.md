@@ -1,6 +1,6 @@
 # Общий README для всего проекта 
-# Схемы drawio пронумерованы по названиям в корне проекта.
-# В каждой папке есть свой README. Но тут с полной информацией.
+## Схемы drawio пронумерованы по названиям в корне проекта.
+## В каждой папке есть свой README. Но тут с полной информацией.
 
 
 ## Как запустить
@@ -15,6 +15,7 @@ docker compose up
 
 ### Инициализация конфигурации:
 docker exec -it configSrv mongosh --port 27017
+
 rs.initiate(
   {
     _id : "config_server",
@@ -26,10 +27,12 @@ rs.initiate(
     ]
   }
 );
+
 exit()
 
 ### Инициализация 1 шарда:
 docker exec -it shard1 mongosh --port 27018
+
 rs.initiate(
     {
       _id : "shard1",
@@ -40,10 +43,12 @@ rs.initiate(
       ]
     }
 );
+
 exit()
 
 ### Инициализация 2 шарда:
 docker exec -it shard2 mongosh --port 27019
+
 rs.initiate(
     {
       _id : "shard2",
@@ -54,25 +59,36 @@ rs.initiate(
       ]
     }
   );
+
 exit()
 
 
 ### Инициализация шардов и наполнение данными
 docker exec -it mongos_router mongosh --port 27020
+
 sh.addShard("shard1/shard1:27018,shard1_replica:27018,shard1_replica_replica:27018")
+
 sh.addShard("shard2/shard2:27019,shard2_replica:27019,shard2_replica_replica:27019")
+
 sh.enableSharding("somedb");
+
 sh.shardCollection("somedb.helloDoc", { "name" : "hashed" } )
+
 use somedb;
+
 for(var i = 0; i < 1000; i++) db.helloDoc.insert({age:i, name:"ly"+i})
+
 db.helloDoc.countDocuments() 
+
 ### Посмотреть шарды и реплики
 sh.status()   
 ### Посмотреть кол-во данных в каждом шарде
 db.helloDoc.getShardDistribution()
 ### Приведу результат, который у меня получился:
 [direct: mongos] somedb> db.helloDoc.getShardDistribution()
+
 Shard shard2 at shard2/shard2:27019,shard2_replica:27019,shard2_replica_replica:27019
+
 {
   data: '23KiB',
   docs: 508,
@@ -80,6 +96,7 @@ Shard shard2 at shard2/shard2:27019,shard2_replica:27019,shard2_replica_replica:
   'estimated data per chunk': '11KiB',
   'estimated docs per chunk': 254
 }
+
 ---
 Shard shard1 at shard1/shard1:27018,shard1_replica:27018,shard1_replica_replica:27018
 {
